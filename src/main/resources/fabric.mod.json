@@ -12,7 +12,7 @@
     "sources": "https://github.com/mfishma/persistent-item-frames"
   },
   "license": "AFL-3.0",
-  "icon": "assets/persistent-frames/icon.png",
+  "icon": "assets/persistent-item-frames/icon.png",
   "environment": "client",
   "entrypoints": {},
   "mixins": [

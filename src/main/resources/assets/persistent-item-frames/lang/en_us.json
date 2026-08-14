@@ -1,0 +1,5 @@
+{
+  "modmenu.nameTranslation.persistent-item-frames": "Persistent Item Frames",
+  "modmenu.descriptionTranslation.persistent-item-frames": "Lightweight item frame cache preventing item frames from despawning when out of range. Companion for Bobby, Voxy, & Distant Horizons.",
+  "modmenu.summaryTranslation.persistent-item-frames": "Lightweight item frame cache preventing frames from despawning."
+}
