@@ -3,7 +3,8 @@
   "package": "com.chino.persistentframes.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "PersistentFramesMixin"
+    "PersistentFramesMixin",
+    "ItemFrameAttackMixin"
   ],
   "injectors": {
     "defaultRequire": 1
