@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
+import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSoundEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.sounds.SoundEvent;
@@ -46,7 +47,17 @@ public abstract class PersistentFramesMixin {
     private static final Map<Vec3, Long> RECENT_BREAK_POSITIONS = new ConcurrentHashMap<>();
 
     @Unique
+    private static final Map<Integer, Long> PENDING_INTERACTIONS = new ConcurrentHashMap<>();
+
+    @Unique
     private static final long BREAK_EVENT_TIMEOUT_MS = 1500L;
+
+    @Unique
+    private static final long INTERACTION_TIMEOUT_MS = 500L;
+
+    public static void registerPendingInteraction(int entityId) {
+        PENDING_INTERACTIONS.put(entityId, System.currentTimeMillis());
+    }
 
     @Unique
     private static boolean isFrameBreakSound(Holder<SoundEvent> soundHolder) {
@@ -100,8 +111,35 @@ public abstract class PersistentFramesMixin {
         return false;
     }
 
+    @Unique
+    private void cleanupUnacknowledgedInteractions() {
+        if (PENDING_INTERACTIONS.isEmpty() || this.level == null) {
+            return;
+        }
+        long now = System.currentTimeMillis();
+        for (Iterator<Map.Entry<Integer, Long>> it = PENDING_INTERACTIONS.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<Integer, Long> entry = it.next();
+            if (now - entry.getValue() > INTERACTION_TIMEOUT_MS) {
+                int entityId = entry.getKey();
+                it.remove();
+                Entity entity = this.level.getEntity(entityId);
+                if (entity instanceof ItemFrame) {
+                    // Server did not acknowledge right-click interaction -> it's a phantom frame, remove it!
+                    this.level.removeEntity(entityId, Entity.RemovalReason.DISCARDED);
+                }
+            }
+        }
+    }
+
+    @Inject(method = "handleSetEntityData", at = @At("HEAD"))
+    private void onSetEntityData(ClientboundSetEntityDataPacket packet, CallbackInfo ci) {
+        // Server acknowledged real frame interaction -> clear from pending
+        PENDING_INTERACTIONS.remove(packet.id());
+    }
+
     @Inject(method = "handleSoundEvent", at = @At("HEAD"))
     private void onSoundEvent(ClientboundSoundPacket packet, CallbackInfo ci) {
+        cleanupUnacknowledgedInteractions();
         if (isFrameBreakSound(packet.getSound())) {
             recordBreakPosition(packet.getX(), packet.getY(), packet.getZ());
         }
@@ -109,6 +147,8 @@ public abstract class PersistentFramesMixin {
 
     @Inject(method = "handleSoundEntityEvent", at = @At("HEAD"))
     private void onSoundEntityEvent(ClientboundSoundEntityPacket packet, CallbackInfo ci) {
+        cleanupUnacknowledgedInteractions();
+        PENDING_INTERACTIONS.remove(packet.getId());
         if (isFrameBreakSound(packet.getSound())) {
             RECENT_BREAK_ENTITY_IDS.add(packet.getId());
         }
@@ -116,6 +156,7 @@ public abstract class PersistentFramesMixin {
 
     @Inject(method = "handleAddEntity", at = @At("HEAD"))
     private void onAddEntity(ClientboundAddEntityPacket packet, CallbackInfo ci) {
+        cleanupUnacknowledgedInteractions();
         if (packet.getType() == EntityType.ITEM) {
             recordBreakPosition(packet.getX(), packet.getY(), packet.getZ());
         }
@@ -123,6 +164,7 @@ public abstract class PersistentFramesMixin {
 
     @Inject(method = "handleRemoveEntities", at = @At("HEAD"), cancellable = true)
     private void onEntitiesDestroy(ClientboundRemoveEntitiesPacket packet, CallbackInfo ci) {
+        cleanupUnacknowledgedInteractions();
         if (this.level == null) {
             return;
         }
