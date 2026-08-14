@@ -1,44 +1,53 @@
-# Persistent Item Frames — Keep Item Frames visible from miles away
+# Persistent Item Frames
 
-Welcome to **Persistent Item Frames**! A simple, incredibly lightweight client-side mod that stops your item frames from despawning when you walk away from them. 
+**Persistent Item Frames** is a lightweight, client-side mod that prevents item frames from disappearing prematurely when you walk away from them.
 
-Persistent Frames was originally created by **Chino_47**. This is an updated, maintained port for modern Minecraft 26.1.2+!
+Originally created by **Chino_47**, this is an updated and maintained port for modern Minecraft 26+ (Fabric).
 
-## The Pitch
-You've just installed [Bobby](https://modrinth.com/mod/bobby), [Voxy](https://modrinth.com/mod/voxy), or [Distant Horizons](https://modrinth.com/mod/distanthorizons). Your render distance is cranked up to 64+ chunks, and your base looks beautiful from the mountain miles away... except all your Item Frames have vanished into thin air.
+---
 
-*Stop me if you've heard this one:*
+## The Problem
 
-### The server says "Delete this", and your client says "No."
-Minecraft servers have a hard limit on how far they track entities. When you walk out of range, the server stops tracking the item frames to save server performance, and sends a "Delete Entity" network packet to your client. This mod simply intercepts and ignores that packet for Item Frames, keeping them visible instead of pulling them from view prematurely.
+To save server TPS, multiplayer servers often aggressively clamp down entity tracking distances—sometimes hiding item frames just 16 to 32 blocks away. 
+
+If you're running extended view distance or LOD mods like [Bobby](https://modrinth.com/mod/bobby), [Voxy](https://modrinth.com/mod/voxy), or [Distant Horizons](https://modrinth.com/mod/distanthorizons), your world renders for miles while your chest labels, storage halls, and map art vanish into thin air as soon as you take a few steps back.
+
+---
 
 ## How It Works
-By intercepting the `ClientboundRemoveEntitiesPacket` on the client side, this mod forces your client to keep the Item Frame in its active memory. 
 
-- **The Server** still gets its performance gain because it stops tracking the frame. 
-- **Your Client** keeps the item frame in memory and hands it off to the vanilla rendering engine.
+1. **The Server Saves Performance**: When you walk out of tracking range, the server stops tracking the frame and sends a "Remove Entity" packet to your client.
+2. **The Client Keeps the Frame**: This mod intercepts that packet and keeps the item frame in client memory, letting vanilla Minecraft continue rendering it seamlessly.
 
-> [!TIP]
-> **Render Distance Limit**: Even though the frames are kept in memory, Minecraft's rendering engine still has a hard cap to save your GPU. Your item frames will render precisely up to the limit set by your **Entity Distance** slider in your Video Settings (up to 500%). Beyond that radius, they will temporarily cull to save FPS, but will instantly reappear when you get closer!
+### Smart In-World Cleanup
+To prevent "ghost" or phantom frames from lingering when things actually break:
+* **Audio & Destruction Detection**: Listens for genuine destruction events (break sounds, item drops, explosions) so frames broken by other players, creepers, or water are removed in real-time.
+* **Supporting Wall Checks**: Automatically removes the frame if you break or target the supporting block behind it.
+* **Server-Verified Interactions**: Clicking or punching a frame validates it with the server—phantom frames vanish cleanly, while claim protections (like spawn/WorldGuard) are fully respected.
+* **GPU Friendly**: Minecraft's built-in **Entity Distance** slider in Video Settings still manages GPU culling normally.
 
-## Installation & Requirements
-To run this mod and keep your frames persistent, you'll need:
-1. **[Fabric Loader](https://fabricmc.net/)** (version **0.15.0 or newer**)
-2. **Minecraft 26.1 or newer** (Tested on 26.1.2 and 26.2).
-3. Drop the `.jar` into your `mods` folder!
-
-*(This mod is entirely client-side. You do not need it on the server!)*
+---
 
 ## Works Great With
-To get the most out of Persistent Item Frames, it pairs naturally with extended rendering and LOD mods (and any server where item frames disappear before your render distance):
-- **[Bobby](https://modrinth.com/mod/bobby)** — Caches chunks on your client so you can see terrain far beyond the server's view distance.
-- **[Voxy](https://modrinth.com/mod/voxy)** — LOD-based extended render distances.
-- **[Distant Horizons](https://modrinth.com/mod/distanthorizons)** — Drastically increases view distance with LOD terrain.
 
-## License
-This updated port continues to be licensed under the **Academic Free License (AFL) v. 3.0**, in accordance with the original creator's license. 
-You can find the full terms in the [LICENSE](LICENSE) file.
+* **[Bobby](https://modrinth.com/mod/bobby)** — Client-side chunk caching
+* **[Voxy](https://modrinth.com/mod/voxy)** — Extended LOD rendering
+* **[Distant Horizons](https://modrinth.com/mod/distanthorizons)** — Simplified LOD terrain
+* Any multiplayer server with low entity tracking distances
 
-## Credits
-- **Chino_47**: For the genius and incredibly lightweight original concept and implementation of Persistent Frames. 
-- **Mojang Studios**: For Minecraft.
+---
+
+## Requirements & Installation
+
+1. **[Fabric Loader](https://fabricmc.net/)** (version `0.15.0+`)
+2. **Minecraft 26.1+** (Tested on `26.1.2` and `26.2`)
+3. Drop the `.jar` into your `.minecraft/mods` folder.
+
+*(100% client-side. No server installation required.)*
+
+---
+
+## License & Credits
+
+* **Original Creator**: [Chino_47](https://curseforge.com/members/chino_47) for the original concept and implementation.
+* **License**: Licensed under the **Academic Free License (AFL) v. 3.0** (see [LICENSE](LICENSE)).
