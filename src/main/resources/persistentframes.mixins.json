@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "com.chino.persistentframes.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "PersistentFramesMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "persistent-item-frames",
+  "version": "${version}",
+  "name": "Persistent Item Frames",
+  "description": "Lightweight item frame cache preventing item frames from despawning when out of range. Companion for Bobby, Voxy, & Distant Horizons.",
+  "authors": [
+    "Chino_47",
+    "mfishma"
+  ],
+  "contact": {
+    "sources": "https://github.com/mfishma/persistent-item-frames"
+  },
+  "license": "AFL-3.0",
+  "icon": "assets/persistent-frames/icon.png",
+  "environment": "client",
+  "entrypoints": {},
+  "mixins": [
+    "persistentframes.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": ">=26.1",
+    "java": ">=25"
+  }
+}
