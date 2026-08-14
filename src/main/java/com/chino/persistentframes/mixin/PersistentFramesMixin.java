@@ -9,11 +9,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
-import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
-import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
-import net.minecraft.network.protocol.game.ClientboundSoundEntityPacket;
-import net.minecraft.network.protocol.game.ClientboundSoundPacket;
+import net.minecraft.network.protocol.game.*;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -124,7 +120,7 @@ public abstract class PersistentFramesMixin {
                 it.remove();
                 Entity entity = this.level.getEntity(entityId);
                 if (entity instanceof ItemFrame) {
-                    // Server did not acknowledge right-click interaction -> it's a phantom frame, remove it!
+                    // Server did not acknowledge left/right click interaction -> phantom frame, remove it!
                     this.level.removeEntity(entityId, Entity.RemovalReason.DISCARDED);
                 }
             }
@@ -133,7 +129,11 @@ public abstract class PersistentFramesMixin {
 
     @Inject(method = "handleSetEntityData", at = @At("HEAD"))
     private void onSetEntityData(ClientboundSetEntityDataPacket packet, CallbackInfo ci) {
-        // Server acknowledged real frame interaction -> clear from pending
+        PENDING_INTERACTIONS.remove(packet.id());
+    }
+
+    @Inject(method = "handleHurtAnimation", at = @At("HEAD"))
+    private void onHurtAnimation(ClientboundHurtAnimationPacket packet, CallbackInfo ci) {
         PENDING_INTERACTIONS.remove(packet.id());
     }
 
