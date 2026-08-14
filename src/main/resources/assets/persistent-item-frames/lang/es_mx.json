@@ -1,5 +1,5 @@
 {
   "modmenu.nameTranslation.persistent-item-frames": "Marcos de Objetos Persistentes",
-  "modmenu.descriptionTranslation.persistent-item-frames": "Caché ligero que evita que los marcos de objetos desaparezcan por la distancia de renderizado del servidor. El complemento ideal para Bobby, Voxy y Distant Horizons.",
-  "modmenu.summaryTranslation.persistent-item-frames": "Evita que los cuadros desaparezcan por el render del servidor."
+  "modmenu.descriptionTranslation.persistent-item-frames": "Caché ligero en el cliente que mantiene visibles los marcos de objetos más allá del rango del servidor. Funciona genial con Bobby, Voxy, Distant Horizons y en cualquier servidor que quite los cuadros de vista antes de tu distancia de render.",
+  "modmenu.summaryTranslation.persistent-item-frames": "Evita que los cuadros desaparezcan antes de tiempo por el servidor."
 }

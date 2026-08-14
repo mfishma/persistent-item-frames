@@ -1,5 +1,5 @@
 {
   "modmenu.nameTranslation.persistent-item-frames": "Persistent Item Frames",
-  "modmenu.descriptionTranslation.persistent-item-frames": "Lightweight item frame cache preventing item frames from despawning when out of range. Companion for Bobby, Voxy, & Distant Horizons.",
-  "modmenu.summaryTranslation.persistent-item-frames": "Lightweight item frame cache preventing frames from despawning."
+  "modmenu.descriptionTranslation.persistent-item-frames": "Lightweight client-side cache keeping item frames visible far beyond server tracking range. Works great with Bobby, Voxy, Distant Horizons, & any servers that pull item frames from view before your render distance.",
+  "modmenu.summaryTranslation.persistent-item-frames": "Keeps item frames visible beyond server tracking limits."
 }

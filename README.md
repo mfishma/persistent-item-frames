@@ -10,7 +10,7 @@ You've just installed [Bobby](https://modrinth.com/mod/bobby), [Voxy](https://mo
 *Stop me if you've heard this one:*
 
 ### The server says "Delete this", and your client says "No."
-Minecraft servers have a hard limit on how far they track entities. When you walk out of range, the server stops tracking the item frames to save performance, and sends a "Delete Entity" network packet to your client. This mod simply intercepts and ignores that packet for Item Frames.
+Minecraft servers have a hard limit on how far they track entities. When you walk out of range, the server stops tracking the item frames to save server performance, and sends a "Delete Entity" network packet to your client. This mod simply intercepts and ignores that packet for Item Frames, keeping them visible instead of pulling them from view prematurely.
 
 ## How It Works
 By intercepting the `ClientboundRemoveEntitiesPacket` on the client side, this mod forces your client to keep the Item Frame in its active memory. 
@@ -29,11 +29,11 @@ To run this mod and keep your frames persistent, you'll need:
 
 *(This mod is entirely client-side. You do not need it on the server!)*
 
-## Recommended Companion Mods
-To get the most out of Persistent Item Frames, we highly recommend running it alongside extended rendering and LOD mods:
+## Works Great With
+To get the most out of Persistent Item Frames, it pairs naturally with extended rendering and LOD mods (and any server where item frames disappear before your render distance):
 - **[Bobby](https://modrinth.com/mod/bobby)** — Caches chunks on your client so you can see terrain far beyond the server's view distance.
 - **[Voxy](https://modrinth.com/mod/voxy)** — LOD-based extended render distances.
-- **[Distant Horizons](https://modrinth.com/mod/distanthorizons)** — Simplifies distant terrain to drastically increase view distance.
+- **[Distant Horizons](https://modrinth.com/mod/distanthorizons)** — Drastically increases view distance with LOD terrain.
 
 ## License
 This updated port continues to be licensed under the **Academic Free License (AFL) v. 3.0**, in accordance with the original creator's license. 
